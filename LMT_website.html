@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Motor LMT Optimization Tool</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.18.0/dist/tf.min.js"></script>
     <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
     <style>
         :root {
@@ -563,34 +562,6 @@
             };
         }
 
-        // Neural network model for prediction
-        function buildModel() {
-            const model = tf.sequential();
-            model.add(tf.layers.dense({
-                units: 256,
-                activation: 'relu',
-                inputShape: [22]
-            }));
-            model.add(tf.layers.batchNormalization());
-            model.add(tf.layers.dropout({rate: 0.4}));
-            model.add(tf.layers.dense({units: 128, activation: 'relu'}));
-            model.add(tf.layers.batchNormalization());
-            model.add(tf.layers.dropout({rate: 0.3}));
-            model.add(tf.layers.dense({units: 64, activation: 'relu'}));
-            model.add(tf.layers.batchNormalization());
-            model.add(tf.layers.dropout({rate: 0.2}));
-            model.add(tf.layers.dense({units: 32, activation: 'relu'}));
-            model.add(tf.layers.dense({units: 1}));
-            
-            model.compile({
-                optimizer: tf.train.adam(0.0005),
-                loss: 'meanSquaredError',
-                metrics: ['mae']
-            });
-            
-            return model;
-        }
-
         // Pole-based LMT calculation
         function calculatePoleBasedLmt(poles, slot, hs, Di, pitch, core_length) {
             const Dm = Di + hs;
@@ -664,7 +635,7 @@
             const params = { poles, slot, hs, Di, pitch, core_length };
             const features = calculateEnhancedFeatures(params);
             
-            // Simulate prediction (in a real app, this would be the model prediction)
+            // Simulate prediction
             const lmt_pred = calculatePoleBasedLmt(poles, slot, hs, Di, pitch, core_length) * (0.98 + Math.random() * 0.04);
             
             // Calculate pole-based LMT for validation
@@ -1071,9 +1042,6 @@
         
         // Initialize the application
         window.addEventListener('DOMContentLoaded', function() {
-            // Initialize model
-            const model = buildModel();
-            
             // Initialize charts
             initCharts();
         });
