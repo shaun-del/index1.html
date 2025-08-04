@@ -141,10 +141,6 @@
             gap: 8px;
         }
         
-        button i {
-            font-size: 1.2rem;
-        }
-        
         .btn-calculate {
             background: linear-gradient(135deg, var(--primary) 0%, #3a86ff 100%);
             color: white;
@@ -479,25 +475,6 @@
             min_core_length_ratio: 0.5,
             max_core_length_ratio: 2.0
         };
-
-        // Motor dataset with parameters and actual LMT
-        const motors = [
-            {poles: 4, slot: 48, hs: 31.75, Di: 228.6, pitch: 11, core_length: 190.5, actual_LMT: 666.66},
-            {poles: 2, slot: 48, hs: 31.75, Di: 228.6, pitch: 23, core_length: 190.5, actual_LMT: 857},
-            {poles: 6, slot: 54, hs: 31.75, Di: 228.6, pitch: 8, core_length: 190.5, actual_LMT: 751.6},
-            {poles: 4, slot: 48, hs: 32.2, Di: 257.1, pitch: 10, core_length: 255, actual_LMT: 1078},
-            {poles: 6, slot: 54, hs: 45, Di: 280, pitch: 8, core_length: 260, actual_LMT: 1170},
-            {poles: 4, slot: 72, hs: 35.7, Di: 336.55, pitch: 15, core_length: 385, actual_LMT: 1330},
-            {poles: 6, slot: 72, hs: 35.7, Di: 336.55, pitch: 10, core_length: 385, actual_LMT: 1302.5},
-            {poles: 2, slot: 36, hs: 18.69, Di: 115, pitch: 15, core_length: 110, actual_LMT: 695},
-            {poles: 2, slot: 36, hs: 18.69, Di: 115, pitch: 15, core_length: 150, actual_LMT: 783},
-            {poles: 4, slot: 36, hs: 23.2, Di: 138, pitch: 8, core_length: 140, actual_LMT: 583},
-            {poles: 4, slot: 36, hs: 23.2, Di: 138, pitch: 8, core_length: 185, actual_LMT: 682},
-            {poles: 6, slot: 36, hs: 23.2, Di: 138, pitch: 5, core_length: 140, actual_LMT: 493},
-            {poles: 6, slot: 36, hs: 23.2, Di: 138, pitch: 5, core_length: 200, actual_LMT: 625},
-            {poles: 6, slot: 54, hs: 75, Di: 384, pitch: 7, core_length: 820, actual_LMT: 2264},
-            {poles: 4, slot: 36, hs: 19.05, Di: 158.76, pitch: 7, core_length: 165, actual_LMT: 661.54}
-        ];
 
         // Feature engineering function
         function calculateEnhancedFeatures(params) {
@@ -1016,8 +993,17 @@
             
             // Simulate calculation delay
             setTimeout(() => {
-                const result = predictOptimalLmt(poles, slot, hs, Di, pitch, core_length);
-                displayResults(result);
+                try {
+                    const result = predictOptimalLmt(poles, slot, hs, Di, pitch, core_length);
+                    displayResults(result);
+                } catch (e) {
+                    resultsContent.innerHTML = `
+                        <div class="error-box">
+                            <h3>❌ Calculation Error</h3>
+                            <p>An error occurred during calculation: ${e.message}</p>
+                        </div>
+                    `;
+                }
             }, 1200);
         });
         
@@ -1034,7 +1020,6 @@
                         <li>Enter actual LMT value</li>
                         <li>The model will automatically retrain</li>
                     </ol>
-                    <p>Current dataset size: ${motors.length} motors</p>
                     <p>Adding more data improves model accuracy for similar motors!</p>
                 </div>
             `;
